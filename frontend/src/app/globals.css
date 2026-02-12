@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply antialiased bg-neutral-50 text-neutral-800;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f5f5f5;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #d4d4d4;
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a3a3a3;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32 py-16 sm:py-20 md:py-24 lg:py-32;
+  }
+  
+  .container-custom {
+    @apply max-w-[1400px] mx-auto;
+  }
+  
+  .text-thin {
+    font-weight: 200;
+    letter-spacing: 0.02em;
+  }
+  
+  .text-light {
+    font-weight: 300;
+    letter-spacing: 0.01em;
+  }
+  
+  /* Photography-inspired effects */
+  .photo-frame {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .photo-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .photo-overlay {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .photo-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    transition: background 0.4s ease;
+    pointer-events: none;
+  }
+  
+  .photo-overlay:hover::after {
+    background: rgba(0,0,0,0.3);
+  }
+  
+  /* Animations */
+  .fade-in {
+    animation: fadeIn 0.8s ease-in;
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+  }
+  
+  .slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+  }
+  
+  .zoom-in {
+    animation: zoomIn 0.5s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Aperture effect */
+  .aperture-effect {
+    position: relative;
+  }
+  
+  .aperture-effect::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg 60deg,
+      rgba(0,0,0,0.03) 60deg 120deg,
+      transparent 120deg 180deg,
+      rgba(0,0,0,0.03) 180deg 240deg,
+      transparent 240deg 300deg,
+      rgba(0,0,0,0.03) 300deg 360deg
+    );
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .aperture-effect:hover::before {
+    opacity: 1;
+  }
+}
