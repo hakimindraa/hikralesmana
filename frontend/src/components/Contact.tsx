@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import axios from 'axios'
+import Toast from './Toast'
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -10,18 +11,21 @@ export default function Contact() {
     phone: '',
     message: ''
   })
-  const [status, setStatus] = useState('')
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus('sending')
+    setIsSubmitting(true)
     
     try {
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/contact`, formData)
-      setStatus('success')
+      setToast({ message: 'Message sent successfully! We\'ll get back to you soon.', type: 'success' })
       setFormData({ name: '', email: '', phone: '', message: '' })
     } catch (error) {
-      setStatus('error')
+      setToast({ message: 'Failed to send message. Please try again or contact us directly.', type: 'error' })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -142,21 +146,23 @@ export default function Contact() {
               </div>
               <button
                 type="submit"
-                disabled={status === 'sending'}
+                disabled={isSubmitting}
                 className="w-full px-8 md:px-10 py-3 md:py-4 border border-neutral-800 text-neutral-800 text-xs md:text-sm tracking-widest hover:bg-neutral-800 hover:text-white transition-all duration-300 uppercase text-light disabled:opacity-50"
               >
-                {status === 'sending' ? 'Sending...' : 'Send Message'}
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
-              {status === 'success' && (
-                <p className="text-green-600 text-xs md:text-sm text-center text-light">Message sent successfully!</p>
-              )}
-              {status === 'error' && (
-                <p className="text-red-600 text-xs md:text-sm text-center text-light">Failed to send. Please try again.</p>
-              )}
             </form>
           </div>
         </div>
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </section>
   )
 }
