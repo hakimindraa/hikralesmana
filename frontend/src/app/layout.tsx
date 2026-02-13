@@ -20,7 +20,7 @@ const bodyFont = Inter({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://hikralesmana.com'), // Ganti dengan domain Anda
+  metadataBase: new URL('https://hikralesmana.vercel.app'), // Domain Vercel Anda
   title: {
     default: 'Hikra Lesmana | Professional Photography & Videography Portfolio',
     template: '%s | Hikra Lesmana'
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'id_ID',
-    url: 'https://hikralesmana.com',
+    url: 'https://hikralesmana.vercel.app',
     title: 'Hikra Lesmana | Professional Photography & Videography',
     description: 'Professional photographer and videographer in Tanjungpinang. Specializing in wedding, product, and event photography. View portfolio and contact for bookings.',
     siteName: 'Hikra Lesmana Portfolio',
@@ -106,8 +106,8 @@ export default function RootLayout({
               '@type': 'Person',
               name: 'Hikra Lesmana',
               alternateName: 'hikralesmana',
-              url: 'https://hikralesmana.com',
-              image: 'https://hikralesmana.com/profile.jpg',
+              url: 'https://hikralesmana.vercel.app',
+              image: 'https://hikralesmana.vercel.app/profile.jpg',
               jobTitle: 'Professional Photographer & Videographer',
               worksFor: {
                 '@type': 'Organization',
@@ -137,9 +137,9 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'ProfessionalService',
               name: 'Hikra Lesmana Photography',
-              image: 'https://hikralesmana.com/og-image.jpg',
-              '@id': 'https://hikralesmana.com',
-              url: 'https://hikralesmana.com',
+              image: 'https://hikralesmana.vercel.app/og-image.jpg',
+              '@id': 'https://hikralesmana.vercel.app',
+              url: 'https://hikralesmana.vercel.app',
               telephone: '+6283137412551',
               priceRange: '$$',
               address: {
