@@ -309,22 +309,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Back to Top Button */}
-      <a
-        href="#hero"
-        className="fixed bottom-8 right-8 w-12 h-12 bg-neutral-800 border border-neutral-700 flex items-center justify-center hover:bg-white hover:border-white group transition-all duration-300 z-40"
-        aria-label="Back to top"
-      >
-        <svg
-          className="w-5 h-5 text-neutral-300 group-hover:text-neutral-900 transition-colors"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-      </a>
+      {/* Back to Top Button - Removed, now in FloatingButtons component */}
     </footer>
   )
 }

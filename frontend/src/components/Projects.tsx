@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { ProjectSkeleton } from './SkeletonLoader'
 
 interface Project {
   id: number
@@ -16,6 +17,7 @@ interface Project {
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   // Convert video URL to embed format
@@ -49,6 +51,7 @@ export default function Projects() {
       .then(res => {
         // Only show first 6 projects on homepage
         setProjects(res.data.slice(0, 6))
+        setLoading(false)
       })
       .catch(() => {
         // Fallback data untuk photographer
@@ -96,6 +99,7 @@ export default function Projects() {
             category: 'Videography'
           },
         ])
+        setLoading(false)
       })
   }, [])
 
@@ -113,9 +117,15 @@ export default function Projects() {
           </h2>
         </div>
         
-        {/* Grid: 2 columns on mobile, 2 on tablet, 3 on desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-          {projects.map((project, index) => (
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+            {[...Array(6)].map((_, i) => (
+              <ProjectSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+            {projects.map((project, index) => (
             <div
               key={project.id}
               onClick={() => setSelectedProject(project)}
@@ -127,6 +137,7 @@ export default function Projects() {
                   src={project.image} 
                   alt={project.title}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
                 />
                 {/* Dark overlay on hover */}
                 <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
@@ -160,9 +171,10 @@ export default function Projects() {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
 
-        {projects.length === 0 && (
+        {projects.length === 0 && !loading && (
           <div className="text-center py-12">
             <p className="text-neutral-600 text-light">No projects yet. Add your first project!</p>
           </div>

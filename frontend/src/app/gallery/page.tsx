@@ -5,12 +5,15 @@ import axios from 'axios'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import Lightbox from '@/components/Lightbox'
+import { GallerySkeleton } from '@/components/SkeletonLoader'
 
 export default function FullGalleryPage() {
   const [images, setImages] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('All')
-  const [selectedImage, setSelectedImage] = useState<any>(null)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/gallery`)
@@ -53,6 +56,23 @@ export default function FullGalleryPage() {
   const filteredImages = activeCategory === 'All' 
     ? images 
     : images.filter(img => img.category === activeCategory)
+
+  const openLightbox = (index: number) => {
+    setCurrentImageIndex(index)
+    setLightboxOpen(true)
+  }
+
+  const closeLightbox = () => {
+    setLightboxOpen(false)
+  }
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % filteredImages.length)
+  }
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + filteredImages.length) % filteredImages.length)
+  }
 
   // Custom masonry pattern
   const getItemClass = (index: number) => {
@@ -106,8 +126,12 @@ export default function FullGalleryPage() {
 
             {/* Loading State */}
             {loading && (
-              <div className="text-center py-12">
-                <p className="text-neutral-600 text-light">Loading gallery...</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 auto-rows-[200px] md:auto-rows-[250px]">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className={getItemClass(i)}>
+                    <GallerySkeleton />
+                  </div>
+                ))}
               </div>
             )}
 
@@ -117,14 +141,15 @@ export default function FullGalleryPage() {
                 {filteredImages.map((item, index) => (
                   <div
                     key={item.id}
-                    onClick={() => setSelectedImage(item)}
+                    onClick={() => openLightbox(index)}
                     className={`group relative overflow-hidden photo-frame fade-in-up cursor-pointer ${getItemClass(index)}`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     <img 
-                      src={item.image} 
+                      src={item.image_url || item.image} 
                       alt={item.title}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
                     />
                     {/* Overlay on hover */}
                     <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-500" />
@@ -159,35 +184,18 @@ export default function FullGalleryPage() {
           </div>
         </section>
 
-        {/* Lightbox Modal */}
-        {selectedImage && (
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedImage(null)}
-          >
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-4 right-4 text-white text-4xl hover:text-neutral-300 transition-colors z-10"
-            >
-              ×
-            </button>
-            <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center">
-              <img
-                src={selectedImage.image}
-                alt={selectedImage.title}
-                className="max-w-full max-h-full object-contain"
-                onClick={(e) => e.stopPropagation()}
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6 text-white text-center">
-                <p className="text-xs md:text-sm tracking-widest uppercase text-thin mb-1">
-                  {selectedImage.category}
-                </p>
-                <p className="text-lg md:text-xl text-light">
-                  {selectedImage.title}
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Lightbox */}
+        {lightboxOpen && (
+          <Lightbox
+            images={filteredImages.map(img => ({ 
+              ...img, 
+              image_url: img.image_url || img.image 
+            }))}
+            currentIndex={currentImageIndex}
+            onClose={closeLightbox}
+            onNext={nextImage}
+            onPrev={prevImage}
+          />
         )}
       </main>
 

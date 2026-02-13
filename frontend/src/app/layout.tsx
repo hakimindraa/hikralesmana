@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import FloatingButtons from '@/components/FloatingButtons'
+import PageTransition from '@/components/PageTransition'
 
 // Font tipis dan elegan untuk photographer portfolio
 const headingFont = Inter({
@@ -29,7 +31,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className={`${headingFont.variable} ${bodyFont.variable}`}>
-      <body className="font-body bg-neutral-50 text-neutral-800">{children}</body>
+      <body className="font-body bg-neutral-50 text-neutral-800">
+        <PageTransition>
+          {children}
+        </PageTransition>
+        <FloatingButtons />
+      </body>
     </html>
   )
 }

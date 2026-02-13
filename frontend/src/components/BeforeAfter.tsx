@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { BeforeAfterSkeleton } from './SkeletonLoader'
 
 // Before/After Slider Component
 function BeforeAfterSlider({ beforeImage, afterImage, title }: { beforeImage: string, afterImage: string, title: string }) {
@@ -44,6 +45,7 @@ function BeforeAfterSlider({ beforeImage, afterImage, title }: { beforeImage: st
         alt={`${title} - After`}
         className="absolute inset-0 w-full h-full object-cover"
         draggable={false}
+        loading="lazy"
       />
 
       {/* Before Image (Foreground with clip) */}
@@ -56,6 +58,7 @@ function BeforeAfterSlider({ beforeImage, afterImage, title }: { beforeImage: st
           alt={`${title} - Before`}
           className="absolute inset-0 w-full h-full object-cover"
           draggable={false}
+          loading="lazy"
         />
       </div>
 
@@ -87,6 +90,7 @@ function BeforeAfterSlider({ beforeImage, afterImage, title }: { beforeImage: st
 
 export default function BeforeAfter() {
   const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/before-after`)
@@ -95,14 +99,16 @@ export default function BeforeAfter() {
           // Show only first 3 items on homepage
           setItems(res.data.slice(0, 3))
         }
+        setLoading(false)
       })
       .catch(() => {
         // No fallback - just don't show the section if API fails
+        setLoading(false)
       })
   }, [])
 
-  // Don't render section if no items
-  if (items.length === 0) return null
+  // Don't render section if no items and not loading
+  if (items.length === 0 && !loading) return null
 
   return (
     <section className="section-padding bg-white">
@@ -120,8 +126,15 @@ export default function BeforeAfter() {
         </div>
 
         {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-          {items.map((item, index) => (
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+            {[...Array(3)].map((_, i) => (
+              <BeforeAfterSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+            {items.map((item, index) => (
             <div
               key={item.id}
               className="fade-in-up"
@@ -134,7 +147,8 @@ export default function BeforeAfter() {
               />
             </div>
           ))}
-        </div>
+          </div>
+        )}
 
         <div className="text-center mt-8 md:mt-12">
           <a
